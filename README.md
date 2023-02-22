@@ -6,11 +6,11 @@
 HealthIT Data Science Hackathon
 
 Work Presented by The Blue Neon Group
-* Theophilus Lincoln Owiti
-* Mercy Mburu
-* Teresa Chebet
-* Ian Kiprotich
-* Pleasant View
+  * Theophilus Lincoln Owiti - lowiti@kabarak.ac.ke
+  * Mercy Mburu - mnmburu@kabarak.ac.ke
+  * Teresa Chebet - teresac@kabarak.ac.ke
+  * Ian Kiprotich - ian@kabarak.ac.ke
+  * Pleasant View - pleasantview076@gmail.com
 
 # Business Logic 
 Tracking and restocking of Malaria commodities is currently done on the basis of 6-month averages 
