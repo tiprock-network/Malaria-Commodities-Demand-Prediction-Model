@@ -1,9 +1,9 @@
 ![](./Pictures/vaccine.png) 
 # Malaria Commodity Prediction
 ### An Application of Time Series with Extreme Gradient Boosting Algorithm
-![](./Pictures/UIHomepage.png)
+![](https://github.com/HealthIT-Kabarak/Malaria-Commodities-Demand-Prediction-Model/blob/files/Pictures/MalariaCommodities-min.gif?raw=true)
 
-HealthIT Data Science Hackathon
+### HealthIT Data Science Hackathon
 
 Work Presented by The Blue Neon Group
 * Theophilus Lincoln Owiti
