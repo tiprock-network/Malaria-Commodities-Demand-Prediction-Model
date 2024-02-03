@@ -19,6 +19,7 @@ def infer_model(county,start_date,end_date,pstr_date,pend_date):
     dataframe['periodid']=pd.to_datetime(dataframe['periodid'])
     dset_indexed=dataframe.set_index(['periodid'])
     
+    #train and test dataset
     train=dset_indexed.loc[dset_indexed.index<'01-01-2021']
     test=dset_indexed.loc[dset_indexed.index>='01-01-2021'] 
     
@@ -54,24 +55,44 @@ def infer_model(county,start_date,end_date,pstr_date,pend_date):
     df=df.merge(test[['prediction']], how='left',left_index=True,right_index=True)
     
     #project prediction
-    #create prediction with bar charts
     start_date=pstr_date.strftime('%Y-%m')
     end_date=pend_date.strftime('%Y-%m')
+
     dates_array=[]
+    period_array=[]
+
     dates=pd.date_range(start_date,end_date)
     for date in dates:
         dates_array.append([date.year,date.month])
+        period_array.append(f"{date.year}-{date.month}")
     transf_dates_array=np.unique(dates_array,axis=0)
+    period_array=np.unique(period_array,axis=0)
     
     #the prediction
     date_input=pd.DataFrame(data=transf_dates_array,columns=['year','month'])
-    y_hat=model_pipeline.predict(date_input)
     
+    #predict using model in pipleine
+    y_hat=model_pipeline.predict(date_input)
 
     # Make predictions using the model
     predictions = y_hat
+    #add to the data_frame new values
+    dataframe[county] = pd.concat([pd.Series(predictions),dataframe[f"{county}"]],ignore_index=True)
+    dataframe['periodid'] = pd.concat([pd.Series(period_array),dataframe['periodid']],ignore_index=True)
+    dataframe['periodid']=pd.to_datetime(dataframe['periodid'])
+    #arrange in descending order
+    #dataframe.sort_values(by='periodid',inplace=True,ascending=False)
+    #arrange in ascending by default
+    dataframe.sort_values(by='periodid',inplace=True)
+    dataframe.reset_index(drop=True, inplace=True)
+    dset_indexed=dataframe.set_index(['periodid'])
 
-    return predictions
+     #generate feature from indexed data
+    df=np.array(([dset_indexed.index.astype(str)],[dset_indexed[county]]))
+    #check what you are sending
+    #print(dataframe.head(10))
+
+    return predictions,df
 
 
 def get_dataframe(county):

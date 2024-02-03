@@ -11,6 +11,10 @@ from CPModel.commodity_prediction_model import get_dataframe
 app=Flask(__name__)
 CORS(app) #add this for fetch API
 
+def Reverse(lst):
+   new_lst = lst[::-1]
+   return new_lst
+
 @app.route('/api/v1.1/analysis',methods=['POST'])
 def analysis():
     try:
@@ -27,8 +31,15 @@ def analysis():
             fend_date=datetime.strptime(fend_date,'%Y-%m-%d')
             pred_strdate=datetime.strptime(fstr,'%Y-%m-%d')
             pred_enddate=datetime.strptime(fend,'%Y-%m-%d')
-            pred=infer_model(county_name,fstart_date,fend_date,pred_strdate,pred_enddate)
+            pred,dataFrame=infer_model(county_name,fstart_date,fend_date,pred_strdate,pred_enddate)
             pred=pred.tolist()
+
+            #get the new series dataframe
+            series = dataFrame.tolist()
+
+            #reverse the dates and the values
+            """series[0][0] = series[0][0][::-1]
+            series[1][0] = series[1][0][::-1]"""
             
             return jsonify({
                 "county":county_name,
@@ -36,7 +47,8 @@ def analysis():
                 "endDate":fend_date,
                 "predStrdate":pred_strdate,
                 "predEnddate":pred_enddate,
-                "prediction":pred
+                "prediction":pred,
+                "response":series
                 }),200
         else:
             return jsonify({
@@ -56,10 +68,16 @@ def getSeriesData():
     try:
         if request.method == 'POST':
             request_body = request.get_json()
+            series = get_dataframe(request_body.get('county_name','')).tolist()
+
+            #reverse the dates and the values
+            series[0][0] = series[0][0][::-1]
+            series[1][0] = series[1][0][::-1]
+
             return jsonify(
                 {
                     "status":"success",
-                    "response":get_dataframe(request_body.get('county_name','')).tolist()
+                    "response": series
                 }
             ),200
     except Exception as e:
